@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100px;
+            padding: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        .collapsible {
+            background-color: #f9f9f9;
+            color: black;
+            cursor: pointer;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+        }
+
+        .content {
+            padding: 0 18px;
+            display: none;
+            overflow: hidden;
+            background-color: #f1f1f1;
+        }
+
+        .section-label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Subway Counter</h1>
+    <form id="subwayForm">
+        <label for="store">Select Store:</label>
+        <select id="store" name="store" style="font-size: 16px;">
+            <option value="Freeport">Freeport</option>
+            <option value="Downtown">Downtown</option>
+            <option value="Arena">Arena</option>
+            <option value="Westlake">Westlake</option>
+        </select>
+
+        <button type="button" class="collapsible" style="font-weight: bold; font-size: 18px;">Bread to Pull</button>
+
+        <div class="content" id="breadToPullSection">
+            <hr>
+            <div class="section-label">CABINET</div>
+            <hr>
+            <label for="cabWhiteToPull">Cabinet White Bread:</label>
+            <input type="number" id="cabWhiteToPull" name="cabWhiteToPull">
+            <label for="cabWheatToPull">Cabinet Wheat Bread:</label>
+            <input type="number" id="cabWheatToPull" name="cabWheatToPull">
+            <hr>
+            <div style="background-color: white; padding: 10px; margin-bottom: 10px;">
+                <p style="font-size: 18px; font-weight: bold;">White Bread to Pull: <span
+                        id="takeOutWhiteResult"></span></p>
+                <p style="font-size: 18px; font-weight: bold;">Wheat Bread to Pull: <span
+                        id="takeOutWheatResult"></span></p>
+            </div>
+
+            <button type="button" onclick="calculateBreadToPull()">Calculate Total</button>
+        </div>
+
+        <button type="button" class="collapsible" style="font-weight: bold; font-size: 18px;">End of Day Bread
+            Count</button>
+        <div class="content" id="endOfDaySection">
+            <hr>
+            <div class="section-label">FREEZER</div>
+            <hr>
+            <label for="closedWheat">Closed Wheat Bread Boxes:</label>
+            <input type="number" id="closedWheat" name="closedWheat">
+            <label for="closedWhite">Closed White Bread Boxes:</label>
+            <input type="number" id="closedWhite" name="closedWhite">
+            <label for="openWheat">Open Wheat Bread Count:</label>
+            <input type="number" id="openWheat" name="openWheat">
+            <label for="openWhite">Open White Bread Count:</label>
+            <input type="number" id="openWhite" name="openWhite">
+            <label for="freezeFlat">Flatbread Bag Count:</label>
+            <input type="number" id="freezeFlat" name="freezeFlat">
+            <hr>
+            <div class="section-label">BACKROOM</div>
+            <hr>
+            <label for="saladBackroom">Salad:</label>
+            <input type="number" id="saladBackroom" name="saladBackroom">
+            <hr>
+            <div class="section-label">CABINET</div>
+            <hr>
+            <label for="cabWhite">Cabinet White Bread:</label>
+            <input type="number" id="cabWhite" name="cabWhite">
+            <label for="cabWheat">Cabinet Wheat Bread:</label>
+            <input type="number" id="cabWheat" name="cabWheat">
+            <label for="cabFlatbread">Cabinet Flatbread:</label>
+            <input type="number" id="cabFlatbread" name="cabFlatbread">
+            <hr>
+            <div class="section-label">HOTWELL</div>
+            <hr>
+            <label for="saladHotwell">Salad:</label>
+            <input type="number" id="saladHotwell" name="saladHotwell">
+            <hr>
+            <div style="background-color: white; padding: 10px; margin-bottom: 10px;">
+                <p style="font-size: 18px; font-weight: bold;">Total Bread: <span id="totalBreadResult"></span></p>
+                <p style="font-size: 18px; font-weight: bold;">Total Flatbread: <span id="totalFlatbreadResult"></span>
+                </p>
+                <p style="font-size: 18px; font-weight: bold;">Total Salad: <span id="totalSaladResult"></span></p>
+            </div>
+            <button type="button" onclick="calculateEndOfDay()">Calculate Total</button>
+        </div>
+    </form>
+
+    <script>
+        const collapsibles = document.getElementsByClassName("collapsible");
+        for (let i = 0; i < collapsibles.length; i++) {
+            collapsibles[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                const content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                    content.style.display = "none";
+                } else {
+                    content.style.display = "block";
+                }
+            });
+        }
+
+        function calculateBreadToPull() {
+            const store = document.getElementById('store').value;
+            let cabWhiteToPull = document.getElementById('cabWhiteToPull').value ? parseInt(document.getElementById('cabWhiteToPull').value) : 0;
+            let cabWheatToPull = document.getElementById('cabWheatToPull').value ? parseInt(document.getElementById('cabWheatToPull').value) : 0;
+
+            let wheatToPull, whiteToPull;
+            switch (store) {
+                case 'Freeport':
+                    wheatToPull = 25 - cabWheatToPull;
+                    whiteToPull = 80 - cabWhiteToPull;
+                    break;
+                case 'Downtown':
+                    wheatToPull = 35 - cabWheatToPull;
+                    whiteToPull = 70 - cabWhiteToPull;
+                    break;
+                case 'Arena':
+                    wheatToPull = 20 - cabWheatToPull;
+                    whiteToPull = 75 - cabWhiteToPull;
+                    break;
+                case 'Westlake':
+                    wheatToPull = 40 - cabWheatToPull;
+                    whiteToPull = 120 - cabWhiteToPull;
+                    break;
+                default:
+                    wheatToPull = 0;
+                    whiteToPull = 0;
+                    break;
+            }
+            whiteToPull = whiteToPull < 0 ? 0 : whiteToPull;
+            wheatToPull = wheatToPull < 0 ? 0 : wheatToPull;
+
+            document.getElementById('takeOutWheatResult').textContent = wheatToPull;
+            document.getElementById('takeOutWhiteResult').textContent = whiteToPull;
+        }
+
+        function calculateEndOfDay() {
+            let cabWhite = document.getElementById('cabWhite').value ? parseInt(document.getElementById('cabWhite').value) : 0;
+            let cabWheat = document.getElementById('cabWheat').value ? parseInt(document.getElementById('cabWheat').value) : 0;
+            let closedWheat = document.getElementById('closedWheat').value ? parseInt(document.getElementById('closedWheat').value) : 0;
+            let closedWhite = document.getElementById('closedWhite').value ? parseInt(document.getElementById('closedWhite').value) : 0;
+            let openWheat = document.getElementById('openWheat').value ? parseInt(document.getElementById('openWheat').value) : 0;
+            let openWhite = document.getElementById('openWhite').value ? parseInt(document.getElementById('openWhite').value) : 0;
+            let cabFlatbread = document.getElementById('cabFlatbread').value ? parseInt(document.getElementById('cabFlatbread').value) : 0;
+            let saladBackroom = document.getElementById('saladBackroom').value ? parseInt(document.getElementById('saladBackroom').value) : 0;
+            let saladHotwell = document.getElementById('saladHotwell').value ? parseInt(document.getElementById('saladHotwell').value) : 0;
+            let freezeFlat = document.getElementById('freezeFlat').value ? parseInt(document.getElementById('freezeFlat').value) : 0;
+
+            let totalBread = cabWhite + cabWheat + (closedWheat * 80) + (closedWhite * 80) + openWhite + openWheat;
+            let totalFlatbread = cabFlatbread + (freezeFlat * 10);
+            let totalSalad = saladBackroom + saladHotwell;
+
+            document.getElementById('totalBreadResult').textContent = totalBread;
+
+
+            document.getElementById('totalFlatbreadResult').textContent = totalFlatbread;
+            document.getElementById('totalSaladResult').textContent = totalSalad;
+        }
+    </script>
