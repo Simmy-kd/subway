@@ -129,10 +129,8 @@
             <hr>
             <div class="section-label">CABINET</div>
             <hr>
-            <label for="cabWhite">Cabinet White Bread:</label>
+            <label for="cabWhite">Total Cabinet White Bread:</label>
             <input type="number" id="cabWhite" name="cabWhite">
-            <label for="cabWheat">Cabinet Wheat Bread:</label>
-            <input type="number" id="cabWheat" name="cabWheat">
             <label for="cabFlatbread">Cabinet Flatbread:</label>
             <input type="number" id="cabFlatbread" name="cabFlatbread">
             <hr>
@@ -202,7 +200,6 @@
 
         function calculateEndOfDay() {
             let cabWhite = document.getElementById('cabWhite').value ? parseInt(document.getElementById('cabWhite').value) : 0;
-            let cabWheat = document.getElementById('cabWheat').value ? parseInt(document.getElementById('cabWheat').value) : 0;
             let closedWheat = document.getElementById('closedWheat').value ? parseInt(document.getElementById('closedWheat').value) : 0;
             let closedWhite = document.getElementById('closedWhite').value ? parseInt(document.getElementById('closedWhite').value) : 0;
             let openWheat = document.getElementById('openWheat').value ? parseInt(document.getElementById('openWheat').value) : 0;
@@ -212,7 +209,7 @@
             let saladHotwell = document.getElementById('saladHotwell').value ? parseInt(document.getElementById('saladHotwell').value) : 0;
             let freezeFlat = document.getElementById('freezeFlat').value ? parseInt(document.getElementById('freezeFlat').value) : 0;
 
-            let totalBread = cabWhite + cabWheat + (closedWheat * 80) + (closedWhite * 80) + openWhite + openWheat;
+            let totalBread = cabWhite + (closedWheat * 80) + (closedWhite * 80) + openWhite + openWheat;
             let totalFlatbread = cabFlatbread + (freezeFlat * 10);
             let totalSalad = saladBackroom + saladHotwell;
 
